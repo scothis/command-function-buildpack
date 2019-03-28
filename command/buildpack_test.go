@@ -26,7 +26,7 @@ import (
 	"github.com/cloudfoundry/libcfbuildpack/test"
 	. "github.com/onsi/gomega"
 	"github.com/projectriff/command-function-buildpack/command"
-	"github.com/projectriff/riff-buildpack/function"
+	"github.com/projectriff/libfnbuildpack/function"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )

@@ -23,7 +23,7 @@ import (
 
 	"github.com/cloudfoundry/libcfbuildpack/detect"
 	"github.com/cloudfoundry/libcfbuildpack/helper"
-	"github.com/projectriff/riff-buildpack/function"
+	"github.com/projectriff/libfnbuildpack/function"
 )
 
 func DetectCommand(d detect.Detect, m function.Metadata) (bool, error) {
