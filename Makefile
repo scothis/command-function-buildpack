@@ -14,7 +14,6 @@ artifactory/io/projectriff/command/io.projectriff.command: buildpack.toml $(GO_S
 	mkdir $@/latest 					&& \
 	tar -C $@/latest -xzf $@/*/*.tgz
 
-
 clean:
 	rm -fR artifactory/
 	rm -fR dependency-cache/

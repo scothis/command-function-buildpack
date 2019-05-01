@@ -86,10 +86,10 @@ func (r RiffCommandInvoker) Contribute() error {
 
 	command := filepath.Join(r.invokerLayer.Root, functionInvokerExecutable)
 
-	return r.layers.WriteMetadata(layers.Metadata{
+	return r.layers.WriteApplicationMetadata(layers.Metadata{
 		Processes: layers.Processes{
-			layers.Process{Type: "web", Command: command},
 			layers.Process{Type: "function", Command: command},
+			layers.Process{Type: "web", Command: command},
 		},
 	})
 }
