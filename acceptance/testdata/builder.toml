@@ -5,10 +5,10 @@ buildpacks = [
 [[groups]]
   # command functions
   buildpacks = [
-    { id = "io.projectriff.command" },
+    { id = "io.projectriff.command", version = 'latest' },
   ]
 
 [stack]
   id = "io.buildpacks.stacks.bionic"
-  build-image = "packs/build:0.1.0"
-  run-image = "packs/run:0.1.0"
+  build-image = "cnbs/build"
+  run-image = "cnbs/run"
