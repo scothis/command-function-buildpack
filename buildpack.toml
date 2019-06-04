@@ -20,13 +20,19 @@ version = "0.0.9-BUILD-SNAPSHOT"
 [[stacks]]
 id = "io.buildpacks.stacks.bionic"
 
+[[stacks]]
+id = "org.cloudfoundry.stacks.cflinuxfs3"
+
 [[metadata.dependencies]]
 id      = "riff-invoker-command"
 name    = "riff Command Invoker"
 version = "0.0.8"
 uri     = "https://storage.googleapis.com/projectriff/command-function-invoker/command-function-invoker-linux-amd64-0.0.8.tgz"
 sha256  = "cf475eae3043cf7dc0818b5ccd70f99c9542d798160fa3965c8506787a70e8d3"
-stacks  = [ "io.buildpacks.stacks.bionic" ]
+stacks  = [
+  "io.buildpacks.stacks.bionic",
+  "org.cloudfoundry.stacks.cflinuxfs3",
+]
 
   [[metadata.dependencies.licenses]]
   type = "Apache-2.0"
