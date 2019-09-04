@@ -1,10 +1,10 @@
 language: go
 go:
-  - '1.11.x'
+- 1.11.x
 cache:
   directories:
-  - $GOPATH/pkg/mod
-install: .travis/install-pack.sh
+  - "$GOPATH/pkg/mod"
+install: ".travis/install-pack.sh"
 script: GO111MODULE=on make test build acceptance
 deploy:
   skip_cleanup: true
@@ -12,4 +12,8 @@ deploy:
   script: bash .travis/deploy.sh
   on:
     all_branches: true
-    condition: $TRAVIS_EVENT_TYPE = push && ($TRAVIS_BRANCH = master || $TRAVIS_BRANCH =~ ^v([0-9]+\.)+x$)
+    condition: "$TRAVIS_EVENT_TYPE = push && ($TRAVIS_BRANCH = master || $TRAVIS_BRANCH
+      =~ ^v([0-9]+\\.)+x$)"
+notifications:
+  slack:
+    secure: RZyOxvCKO1P+A8S8rXXW1A9jd34KS6u6E78ILkZsr1BfDan7bCZKME072ummqvA3MNcTnInuEXwUYHwwc4x8SEqICMkTS2naZHe/TrDXe4SjIyA1bkAI4Ntppt2gLPznjD59H87x8MWIwFher6E2i2q3BUDHBqiIfY6ZdGgCYEF6TkmV3B6WQlE/ZtCEcNYiIQZjHk4Z3YhB4c6zY/pHPo45Sy7e7A8W/AJXUiE/hkXhh1vlrJfeYu8I2TnCjI3eRcSv6LRVogtXN5gp6Uy4XwRJrQG9lL9riKRNgjwJ21ymP+Ox5RoUKoClXJ++ZfXWwYjlhpE3A4ipqOnI2q8XOFjcAoQBWcThSqa6hcLqT591rbmkEiRDWpLJgHKeS8HQvTlQbcZaPvXCUEm6/OfUnJTSgolOYMZzUs9mwjzqj4pWaIe6jiO1C27AQlUTUIIFHGiTGOaQqdGzqjUeJC4y+o1l1r6NaW4HNhQdhOtggLyEbblIJpVUiFbaE2ywZ2pBOWFnAfbDA8GZOMrKzajEygH1Pys2zNsvdF98bldYDic/lE4U/n6uKhBs0KPpdk5jn6Qyoh8gCDoIE8m70Ml+mrDBoRoRof5DuEGz9mlpWMyZ3cwBjRcFzziAoq6ss2hd4P8qqlkDsYZpPeSZwoPIv8Frb+lgsz8iVuyTqjx3e7k=
