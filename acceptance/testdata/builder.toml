@@ -1,14 +1,13 @@
 buildpacks = [
-  { id = "io.projectriff.command", latest = true, uri = "../../artifactory/io/projectriff/command/io.projectriff.command/latest" },
+  { id = "io.projectriff.command", uri = "../../artifactory/io/projectriff/command/io.projectriff.command/latest" },
 ]
 
-[[groups]]
-  # command functions
-  buildpacks = [
-    { id = "io.projectriff.command", version = 'latest' },
-  ]
+[[order]]
+group = [
+  { id = "io.projectriff.command" },
+]
 
 [stack]
-  id = "io.buildpacks.stacks.bionic"
-  build-image = "cnbs/build"
-  run-image = "cnbs/run"
+id          = "io.buildpacks.stacks.bionic"
+build-image = "cloudfoundry/build:base-cnb"
+run-image   = "cloudfoundry/run:base-cnb"

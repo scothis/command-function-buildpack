@@ -18,50 +18,81 @@
 package command
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/buildpack/libbuildpack/buildplan"
 	"github.com/cloudfoundry/libcfbuildpack/build"
 	"github.com/cloudfoundry/libcfbuildpack/detect"
+	"github.com/cloudfoundry/libcfbuildpack/helper"
 	"github.com/projectriff/libfnbuildpack/function"
 )
 
-type CommandBuildpack struct {
-	id string
-}
+const executable = 0100
 
-func (bp *CommandBuildpack) Id() string {
-	return bp.id
-}
+type Buildpack struct{}
 
-func (bp *CommandBuildpack) Detect(d detect.Detect, m function.Metadata) (*buildplan.BuildPlan, error) {
-	if detected, err := bp.detect(d, m); err != nil {
-		return nil, err
-	} else if detected {
-		plan := BuildPlanContribution(d, m)
-		return &plan, nil
+func (b Buildpack) Build(build build.Build) (int, error) {
+	if f, ok, err := NewFunction(build); err != nil {
+		return build.Failure(function.Error_ComponentInitialization), err
+	} else if ok {
+		if err := f.Contribute(); err != nil {
+			return build.Failure(function.Error_ComponentContribution), err
+		}
 	}
-	// didn't detect
-	return nil, nil
+
+	if invoker, ok, err := NewInvoker(build); err != nil {
+		return build.Failure(function.Error_ComponentInitialization), err
+	} else if ok {
+		if err := invoker.Contribute(); err != nil {
+			return build.Failure(function.Error_ComponentContribution), err
+		}
+	}
+
+	return build.Success()
 }
 
-func (*CommandBuildpack) detect(d detect.Detect, m function.Metadata) (bool, error) {
-	// Try command
-	return DetectCommand(d, m)
-}
+func (b Buildpack) Detect(detect detect.Detect, metadata function.Metadata) (int, error) {
+	if metadata.Artifact == "" {
+		return detect.Fail(), nil
+	}
 
-func (*CommandBuildpack) Build(b build.Build) error {
-	invoker, ok, err := NewCommandInvoker(b)
+	path := filepath.Join(detect.Application.Root, metadata.Artifact)
+
+	ok, err := helper.FileExists(path)
+	if err != nil || !ok {
+		return detect.Error(function.Error_ComponentInternal), err
+	}
+
+	info, err := os.Stat(path)
 	if err != nil {
-		return err
-	} else if !ok {
-		return fmt.Errorf("buildpack passed detection but did not know how to actually build")
+		return detect.Error(function.Error_ComponentInternal), err
 	}
-	return invoker.Contribute()
+
+	if !b.executable(info) {
+		detect.Logger.Debug("Disregarding %q for the 'command' invoker, as it does not have executable permission", path)
+		return detect.Error(function.Error_ComponentInternal), nil
+	}
+
+	return detect.Pass(buildplan.Plan{
+		Provides: []buildplan.Provided{
+			{Name: Dependency},
+		},
+		Requires: []buildplan.Required{
+			{
+				Name: Dependency,
+				Metadata: map[string]interface{}{
+					Command: metadata.Artifact,
+				},
+			},
+		},
+	})
 }
 
-func NewBuildpack() function.Buildpack {
-	return &CommandBuildpack{
-		id: "command",
-	}
+func (b Buildpack) executable(fileInfo os.FileInfo) bool {
+	return fileInfo.Mode().IsRegular() && (fileInfo.Mode().Perm()&executable == executable)
+}
+
+func (b Buildpack) Id() string {
+	return "command"
 }

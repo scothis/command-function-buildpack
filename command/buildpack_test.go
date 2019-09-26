@@ -17,104 +17,75 @@
 package command_test
 
 import (
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/buildpack/libbuildpack/buildplan"
+	"github.com/buildpack/libbuildpack/detect"
 	"github.com/cloudfoundry/libcfbuildpack/test"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega"
 	"github.com/projectriff/command-function-buildpack/command"
 	"github.com/projectriff/libfnbuildpack/function"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 )
 
-func TestName(t *testing.T) {
-	spec.Run(t, "Id", func(t *testing.T, _ spec.G, it spec.S) {
+func TestBuildpack(t *testing.T) {
+	spec.Run(t, "Buildpack", func(t *testing.T, when spec.G, it spec.S) {
 
-		g := NewGomegaWithT(t)
+		g := gomega.NewWithT(t)
 
-		it("has the right id", func() {
-			b := command.NewBuildpack()
-
-			g.Expect(b.Id()).To(Equal("command"))
-		})
-	}, spec.Report(report.Terminal{}))
-}
-
-func TestDetect(t *testing.T) {
-	spec.Run(t, "Detect", func(t *testing.T, _ spec.G, it spec.S) {
-
-		g := NewGomegaWithT(t)
-
-		var f *test.DetectFactory
-		var m function.Metadata
-		var b function.Buildpack
+		var (
+			b command.Buildpack
+			f *test.DetectFactory
+		)
 
 		it.Before(func() {
+			b = command.Buildpack{}
 			f = test.NewDetectFactory(t)
-			m = function.Metadata{}
-			b = command.NewBuildpack()
 		})
 
-		it("fails by default", func() {
-			plan, err := b.Detect(f.Detect, m)
+		when("id", func() {
 
-			g.Expect(err).To(BeNil())
-			g.Expect(plan).To(BeNil())
+			it("returns id", func() {
+				g.Expect(b.Id()).To(gomega.Equal("command"))
+			})
 		})
 
-		it("passes if the artifact is executable", func() {
-			err := os.MkdirAll(f.Detect.Application.Root, 0755)
-			g.Expect(err).To(BeNil())
-			defer os.RemoveAll(f.Detect.Application.Root)
-			tmpfile, err := ioutil.TempFile(f.Detect.Application.Root, "example")
-			g.Expect(err).To(BeNil())
-			tmpfile.Chmod(0755)
-			artifact, err := filepath.Rel(f.Detect.Application.Root, tmpfile.Name())
-			g.Expect(err).To(BeNil())
+		when("detect", func() {
 
-			m.Artifact = artifact
+			it("fails with no artifact", func() {
+				g.Expect(b.Detect(f.Detect, function.Metadata{})).To(gomega.Equal(detect.FailStatusCode))
+			})
 
-			plan, err := b.Detect(f.Detect, m)
+			it("fails with non-existent file", func() {
+				g.Expect(b.Detect(f.Detect, function.Metadata{Artifact: "test-file"})).To(gomega.Equal(function.Error_ComponentInternal))
+			})
 
-			g.Expect(err).To(BeNil())
-			g.Expect(plan).To(Equal(&buildplan.BuildPlan{
-				command.Dependency: buildplan.Dependency{
-					Metadata: buildplan.Metadata{"command": artifact},
-				},
-			}))
-		})
-	}, spec.Report(report.Terminal{}))
-}
+			it("errors with non-executable file", func() {
+				test.TouchFile(t, f.Detect.Application.Root, "test-file")
 
-func TestBuild(t *testing.T) {
-	spec.Run(t, "Build", func(t *testing.T, _ spec.G, it spec.S) {
-		g := NewGomegaWithT(t)
+				g.Expect(b.Detect(f.Detect, function.Metadata{Artifact: "test-file"})).To(gomega.Equal(function.Error_ComponentInternal))
+			})
 
-		var f *test.BuildFactory
-		var b function.Buildpack
+			it("passes with executable file", func() {
+				test.WriteFileWithPerm(t, filepath.Join(f.Detect.Application.Root, "test-file"), 0700, "")
 
-		it.Before(func() {
-			f = test.NewBuildFactory(t)
-			b = command.NewBuildpack()
-		})
-
-		it("won't build unless passed detection", func() {
-			err := b.Build(f.Build)
-
-			g.Expect(err).To(MatchError("buildpack passed detection but did not know how to actually build"))
-		})
-
-		it.Pend("will build if passed detection", func() {
-			f.AddBuildPlan(command.Dependency, buildplan.Dependency{})
-			f.AddDependency(command.Dependency, ".")
-
-			err := b.Build(f.Build)
-
-			g.Expect(err).To(BeNil())
+				g.Expect(b.Detect(f.Detect, function.Metadata{Artifact: "test-file"})).To(gomega.Equal(detect.PassStatusCode))
+				g.Expect(f.Plans).To(test.HavePlans(buildplan.Plan{
+					Provides: []buildplan.Provided{
+						{Name: command.Dependency},
+					},
+					Requires: []buildplan.Required{
+						{
+							Name: command.Dependency,
+							Metadata: map[string]interface{}{
+								command.Command: "test-file",
+							},
+						},
+					},
+				}))
+			})
 		})
 	}, spec.Report(report.Terminal{}))
 }
