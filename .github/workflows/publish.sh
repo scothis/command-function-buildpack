@@ -7,7 +7,7 @@ set -o pipefail
 version=$(sed -n 's|version = \"\(.*\)\"|\1|p' buildpack.toml | head -n1)
 git_sha=$(git rev-parse HEAD)
 git_timestamp=$(TZ=UTC git show --quiet --date='format-local:%Y%m%d%H%M%S' --format="%cd")
-git_branch=${1}
+git_branch=${1:11} # drop 'refs/head/' prefix
 slug=${version}
 if [[ ${version} = *"-SNAPSHOT" ]] ; then
   # append timestamp and sha to slug
@@ -16,7 +16,7 @@ fi
 
 echo "Publishing buildpack"
 gsutil cp -a public-read artifactory/io/projectriff/command/io.projectriff.command/${version}/io.projectriff.command-${slug}.tgz gs://projectriff/command-function-buildpack/
-if [ "${git_branch}" = 'refs/heads/master' ] ; then
+if [ "${git_branch}" = 'master' ] ; then
     gsutil cp -a public-read artifactory/io/projectriff/command/io.projectriff.command/${version}/io.projectriff.command-${slug}.tgz gs://projectriff/command-function-buildpack/latest.tgz
 fi
 
