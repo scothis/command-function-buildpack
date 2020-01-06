@@ -22,6 +22,8 @@ github.com/buildpack/libbuildpack v1.24.3/go.mod h1:16+PwmWtgcwzIVcCzwxwc9yi1g/N
 github.com/buildpack/libbuildpack v1.25.8 h1:k7V5ArMvaioh5fCPsxvJ1Q5Svb5rIt6E3E5h9cxkoSc=
 github.com/buildpack/libbuildpack v1.25.8/go.mod h1:l4/s95NP96DffC5A+U7ezwqCF9JNGTnoagqeB+dimSQ=
 github.com/buildpack/libbuildpack v1.25.9/go.mod h1:SAar5bFlgGoIk0umOpPyl5XvnWt4gFVbvKsLmdIPnS4=
+github.com/buildpack/libbuildpack v1.25.10 h1:r8iC8TS3x7PNfofX0RGg3GnVqT02ABgagxCMEosWtrk=
+github.com/buildpack/libbuildpack v1.25.10/go.mod h1:SAar5bFlgGoIk0umOpPyl5XvnWt4gFVbvKsLmdIPnS4=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudfoundry/libcfbuildpack v1.87.2 h1:fTMiMguCubJc9ZbRN3oI3ZWPB4swixY6oQDDW+m/2vU=
 github.com/cloudfoundry/libcfbuildpack v1.87.2/go.mod h1:u4rY3hScjPQg0o9TFSoXsPShiuQIqNRmAoXzQ2qPdsw=
