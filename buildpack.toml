@@ -25,13 +25,16 @@ id = "io.buildpacks.stacks.bionic"
 [[stacks]]
 id = "org.cloudfoundry.stacks.cflinuxfs3"
 
+[[stacks]]
+id = "heroku-18"
+
 [[metadata.dependencies]]
 id      = "riff-invoker-command"
 name    = "riff Command Invoker"
 version = "0.0.9"
 uri     = "https://storage.googleapis.com/projectriff/command-function-invoker/command-function-invoker-linux-amd64-0.0.9-10a9bdf9c566ff88cc26273615f7c4982ac6e25d.tgz"
 sha256  = "419bb8bd63a2f1925922f03b17b8bf9bab79e0d6e3cd11aca5363e182f21cfb3"
-stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3" ]
+stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3", "heroku-18" ]
 
   [[metadata.dependencies.licenses]]
   type = "Apache-2.0"
