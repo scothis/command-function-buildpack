@@ -32,8 +32,8 @@ id = "heroku-18"
 id      = "riff-invoker-command"
 name    = "riff Command Invoker"
 version = "0.0.9"
-uri     = "https://storage.googleapis.com/projectriff/command-function-invoker/command-function-invoker-linux-amd64-0.0.9-10a9bdf9c566ff88cc26273615f7c4982ac6e25d.tgz"
-sha256  = "419bb8bd63a2f1925922f03b17b8bf9bab79e0d6e3cd11aca5363e182f21cfb3"
+uri     = "https://storage.googleapis.com/projectriff/command-function-invoker/command-function-invoker-linux-amd64-0.0.9-snapshot/snapshot/44469b79aefca64e0700859f2fef823a2b1bb094.tgz"
+sha256  = "aa8156e755f5761c0f441d5af87bf4b6c9474bbf9a858592121b1e522c98c827"
 stacks  = [ "io.buildpacks.stacks.bionic", "org.cloudfoundry.stacks.cflinuxfs3", "heroku-18" ]
 
   [[metadata.dependencies.licenses]]
