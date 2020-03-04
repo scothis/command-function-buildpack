@@ -47,7 +47,9 @@ To build the command-function-buildpack you'll need
 - Go 1.13+
 - to run acceptance tests:
   - a running local docker daemon
-  - the [`pack`](https://github.com/buildpack/pack command line tool, [version](https://github.com/buildpack/pack/releases) `>= 0.9.0`.
+- for local function builds
+  - the [`pack`](https://github.com/buildpacks/pack) command line tool
+
 
 You can build the buildpack by running
 
